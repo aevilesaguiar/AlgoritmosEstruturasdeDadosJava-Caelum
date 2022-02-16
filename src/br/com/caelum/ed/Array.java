@@ -5,12 +5,21 @@ import java.util.Objects;
 
 public class Array {
 
-	private Aluno[] alunos = new Aluno[100];
+	//Em vez de colocarmos um array de Aluno na classe Vetor vamos colocar um array de Object.
+	//assim estamos generalizando a nossa estrutura de dados.
+	//Desta forma, poderemos armazenar qualquer tipo de objeto.
+	
+	//private Aluno[] alunos = new Aluno[100];
+	private Object[] objetos = new Object[100];
 
-	private int totalDeAlunos = 0;
+	
+	//private int totalDeAlunos = 0;
+	private int totalDeObjetos = 0;
 
 	// adiciona Aluno fim da lista
-	public void adicionaAluno(Aluno aluno) {
+	public void adicionaAluno(Object aluno) {
+
+		this.garantaEspaco();
 		/*
 		 * Com esse método o consumo de tempo é muito alto , pois ele precisa rodar
 		 * todas as vezes até achar a primeira posição vazia for (int i = 0; i <
@@ -21,41 +30,52 @@ public class Array {
 		// Agora, o consumo de tempo do método é sempre o mesmo não importa
 		// quantos alunos estejam armazenados.Neste caso, dizemos que o consumo é
 		// constante.
-		this.alunos[this.totalDeAlunos] = aluno;
-		totalDeAlunos++;
+		this.objetos[this.totalDeObjetos] = aluno;
+		totalDeObjetos++;
 
 	}
 
 	// adiciona aluno em uma determinada posição
-	public void adicionaAluno(int posicao, Aluno aluno) {
+	public void adicionaAluno(int posicao, Object aluno) {
+		this.garantaEspaco();
 
 		if ((!this.posicaoValidaAluno(posicao))) {
 			throw new IllegalArgumentException("Posição inválida");
 
 		}
-		for (int i = this.totalDeAlunos - 1; i >= posicao; i--) {
-			this.alunos[i + 1] = this.alunos[i];
+		for (int i = this.totalDeObjetos - 1; i >= posicao; i--) {
+			this.objetos[i + 1] = this.objetos[i];
 		}
 
-		this.alunos[posicao] = aluno;
-		this.totalDeAlunos++;
+		this.objetos[posicao] = aluno;
+		this.totalDeObjetos++;
 
 	}
 
-	public Aluno pegaAluno(int posicao) {
+	public Object pegaAluno(int posicao) {
 
 		if (!this.posicaoOcupada(posicao)) {
 			throw new IllegalArgumentException("Posição inválida");
 		}
 
-		return (Aluno) this.alunos[posicao];
+		return this.objetos[posicao];
 	}
 
-	public int removeAluno(int posicao) {
-		return posicao;
+	public void removeAluno(int posicao) {
+
+		if (!this.posicaoOcupada(posicao)) {
+			throw new IllegalArgumentException("Posição inválida");
+		}
+
+		for (int i = posicao; i < this.totalDeObjetos - 1; i++) {
+			this.objetos[i] = this.objetos[i + 1];
+		}
+
+		this.totalDeObjetos--;
+
 	}
 
-	public boolean contemAluno(Aluno aluno) {
+	public boolean contemAluno(Object aluno) {
 
 		/*
 		 * método é ineficiente quando a Lista tem poucos elementos. Perceba que ele
@@ -74,8 +94,8 @@ public class Array {
 		 * return true; }
 		 */
 
-		for (int i = 0; i < this.totalDeAlunos; i++) {
-			if (aluno.equals(this.alunos[i])) {
+		for (int i = 0; i < this.totalDeObjetos; i++) {
+			if (aluno.equals(this.objetos[i])) {
 				return true;
 			}
 		}
@@ -84,32 +104,43 @@ public class Array {
 	}
 
 	private boolean posicaoOcupada(int posicao) {
-		return posicao >= 0 && posicao < this.totalDeAlunos;
+		return posicao >= 0 && posicao < this.totalDeObjetos;
 	}
 
 	public int totalAluno() {
-		return this.totalDeAlunos;
+		return this.totalDeObjetos;
 
 	}
 
 	private boolean posicaoValidaAluno(int posicao) {
 
-		return posicao >= 0 && posicao <= this.totalDeAlunos;
+		return posicao >= 0 && posicao <= this.totalDeObjetos;
+
+	}
+
+	private void garantaEspaco() {
+		if (this.totalDeObjetos == this.objetos.length) {
+			Object[] novoArray = new Aluno[this.objetos.length * 2];
+			for (int i = 0; i < this.objetos.length; i++) {
+				novoArray[i] = this.objetos[i];
+			}
+			this.objetos = novoArray;
+		}
 
 	}
 
 	@Override
 	public String toString() {
-		if (this.totalDeAlunos == 0) {
+		if (this.totalDeObjetos == 0) {
 			return "[]";
 		}
 		StringBuilder builder = new StringBuilder();
 		builder.append("[");
-		for (int i = 0; i < this.totalDeAlunos - 1; i++) {
-			builder.append(this.alunos[i]);
+		for (int i = 0; i < this.totalDeObjetos - 1; i++) {
+			builder.append(this.objetos[i]);
 			builder.append(", ");
 		}
-		builder.append(this.alunos[this.totalDeAlunos - 1]);
+		builder.append(this.objetos[this.totalDeObjetos- 1]);
 		builder.append("]");
 		return builder.toString();
 	}
@@ -119,8 +150,8 @@ public class Array {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Arrays.deepHashCode(alunos);
-		result = prime * result + Objects.hash(totalDeAlunos);
+		result = prime * result + Arrays.deepHashCode(objetos);
+		result = prime * result + Objects.hash(totalDeObjetos);
 		return result;
 	}
 
@@ -133,7 +164,7 @@ public class Array {
 		if (getClass() != obj.getClass())
 			return false;
 		Array other = (Array) obj;
-		return Arrays.deepEquals(alunos, other.alunos) && totalDeAlunos == other.totalDeAlunos;
+		return Arrays.deepEquals(objetos, other.objetos) && totalDeObjetos == other.totalDeObjetos;
 	}
 
 }

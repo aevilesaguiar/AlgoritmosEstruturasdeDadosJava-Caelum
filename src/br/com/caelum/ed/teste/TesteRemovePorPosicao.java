@@ -1,6 +1,7 @@
 package br.com.caelum.ed.teste;
 
 import br.com.caelum.ed.Aluno;
+import br.com.caelum.ed.Array;
 
 public class TesteRemovePorPosicao {
 
@@ -13,14 +14,14 @@ public class TesteRemovePorPosicao {
 		a2.setNome("Inez");
 		a3.setNome("Aninha");
 
-		Aluno lista = new Aluno();
+		Array lista = new Array();
 
 		lista.adicionaAluno(a1);
 		lista.adicionaAluno(a2);
 		lista.adicionaAluno(a3);
 		
 		
-		lista.removeAluno(0);
+		lista.removeAluno(2);
 		
 		System.out.println(lista);
 
